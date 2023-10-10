@@ -9,10 +9,12 @@ import io.cucumber.junit.CucumberOptions;
 @CucumberOptions(
         features="classpath:features",//to tell cucumber where is ur feature file
         glue="com.qa.automation.stefdefs", // to tell cucumber where is ur step def code
-        tags="@ProdSearch", // to tell which tagged feature file to execute
+        tags="@LogoTitleValidation", // to tell which tagged feature file to execute
         plugin = {"pretty", // to generate reports
             "html:target/html/web_ui_automation_report.html",
             "json:target/json/file.json",
+            "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:",
+			"timeline:test-output-thread/"
             },
         monochrome = true,
         publish=true,
