@@ -16,6 +16,10 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.qa.automation.core.WebDriverFactory;
+import com.qa.automation.pageobject.LandingPageObjects;
+import com.qa.automation.pageobject.ProductsPageObjects;
+import com.qa.automation.pageobject.SignUpLoginPageObjects;
+
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -35,6 +39,10 @@ public class StepDef {
 	int implictlyWaitTimeoutSec = 20;
 	Scenario scn;
 	
+	LandingPageObjects landingPageObjects;
+	SignUpLoginPageObjects signUpLoginPageObjects;
+	ProductsPageObjects productsPageObjects;
+	
 	@Before
 	public void setUp(Scenario scn) throws Exception
 	{
@@ -42,6 +50,9 @@ public class StepDef {
 		String browserName = WebDriverFactory.getBrowserName();
 		driver = WebDriverFactory.getWebDriverForBrowser(browserName);
 		wait = new WebDriverWait(driver, implictlyWaitTimeoutSec);
+		landingPageObjects = new LandingPageObjects(driver);
+		signUpLoginPageObjects = new SignUpLoginPageObjects(driver);
+		productsPageObjects = new ProductsPageObjects(driver);
 	}
 	
 	@After(order=1)
@@ -74,8 +85,8 @@ public class StepDef {
 
 	@When("application logo is displayed")
 	public void application_logo_is_displayed() {
-		WebElement landingPageLogoEle = driver.findElement(By.xpath("//img[@alt='Website for automation practice']"));
-		Assert.assertEquals(true, landingPageLogoEle.isDisplayed());
+		
+		landingPageObjects.validateAppLogo();
 	}
 	
 	@Then("title of the landing page is {string}")
@@ -84,105 +95,110 @@ public class StepDef {
 	}
 	
 	@Given("user clicks on Signup\\/login button form top header section")
-	public void user_clicks_on_signup_login_button_form_top_header_section() {
-		WebElement SignLoginBtnEle = driver.findElement(By.xpath("//a[text()=' Signup / Login']"));
-		SignLoginBtnEle.click();
+	public void user_clicks_on_signup_login_button_form_top_header_section() 
+	{
+		landingPageObjects.ClickOnSignUpLoginBtn();
 	}
 
 	@And("user redirected to login page with title as {string}")
 	public void user_redirected_to_login_page_with_title_as(String loginPageTitle) {
-		wait.until(ExpectedConditions.titleContains("Automation Exercise - Signup / Login"));
-		Assert.assertEquals(loginPageTitle, driver.getTitle());
+//		wait.until(ExpectedConditions.titleContains("Automation Exercise - Signup / Login"));
+//		Assert.assertEquals(loginPageTitle, driver.getTitle());
+		signUpLoginPageObjects.validatesignUpLoginPageTitle(loginPageTitle);
 	}
 	@When("url for the login page contains {string} as keyword")
 	public void url_for_the_login_page_contains_as_keyword(String loginPageUrlKeyword) {
-		wait.until(ExpectedConditions.urlContains(loginPageUrlKeyword));
-		Assert.assertEquals(true, driver.getCurrentUrl().contains(loginPageUrlKeyword));
+		signUpLoginPageObjects.validateLoginKeywordInUrl1(loginPageUrlKeyword);
 	}
 	@And("user able to see {string} section on login page")
 	public void user_able_to_see_section_on_login_page(String loginPageSecHeader) {
-		WebElement loginsecHeaderEle = driver.findElement(By.xpath("//h2[text()='Login to your account']"));
-		Assert.assertEquals(loginPageSecHeader, loginsecHeaderEle.getText());  
+		signUpLoginPageObjects.validateLoginSectionHeader(loginPageSecHeader); 
 	}
 	@And("user enters valid registered email id as {string}")
 	public void user_enters_valid_registered_email_id_as(String userRegEmailIDtxt) {
-		WebElement  loginEmailIdFieldEle = driver.findElement(By.xpath("//input[@placeholder='Email Address' and @data-qa='login-email']"));
-		loginEmailIdFieldEle.sendKeys(userRegEmailIDtxt);
+		signUpLoginPageObjects.sendTextToLoginField(userRegEmailIDtxt);
 	}
 	@And("user enters valid password as {string}")
 	public void user_enters_valid_password_as(String userRegPasswordtxt) {
-		WebElement  loginPasswordFieldEle = driver.findElement(By.xpath("//input[@placeholder='Password' and @data-qa='login-password']"));
-		loginPasswordFieldEle.sendKeys(userRegPasswordtxt);
+		signUpLoginPageObjects.sendTextToPasswordField(userRegPasswordtxt);
 	}
 	
 	@And("click on login button")
 	public void click_on_login_button() {
-		WebElement LoginBtnEle = driver.findElement(By.xpath("//button[text()='Login']"));
-		LoginBtnEle.click();
+		signUpLoginPageObjects.clickOnLoginButton();
 	}
 	
 	@Then("after login user able to see {string} button at top header of application")
 	public void after_login_user_able_to_see_button_at_top_header_of_application(String logoutButtontext) {
-		WebElement LogoutBtnEle = driver.findElement(By.xpath("//a[text()=' Logout']"));
-		Assert.assertEquals(logoutButtontext, LogoutBtnEle.getText().trim());
+		landingPageObjects.validateLogoutButtonFormHeader(logoutButtontext);
 	}
 	@And("user is able to see {string} button at top header section of application")
 	public void user_is_able_to_see_button_at_top_header_section_of_application(String deleteAccountButtontext) {
-		WebElement DeleteBtnEle = driver.findElement(By.xpath("//a[text()=' Delete Account']"));
-		Assert.assertEquals(deleteAccountButtontext, DeleteBtnEle.getText().trim());
+		landingPageObjects.validateDelAccButtonFrmHeader(deleteAccountButtontext);
 	}
 
 	@And("with {string} as user name just after Logged in as button")
 	public void with_as_user_name_just_after_logged_in_as_button(String loggedInUserName) {
-		WebElement LoggedUserNameTxtEle = driver.findElement(By.xpath("//a[text()=' Logged in as ']/b"));
-		Assert.assertEquals(loggedInUserName, LoggedUserNameTxtEle.getText().trim());
+		landingPageObjects.validateUserNameLoggedInAs(loggedInUserName);
 	}	
 	
 	@When("user header over to products page")
 	public void user_header_over_to_product_page()
 	{
-		driver.navigate().to("https://automationexercise.com/products");
+		String prodPageUrl = productsPageObjects.productsPageUrl();
+		driver.navigate().to(baseUrl+prodPageUrl);
+		
+		//or
+		
+		//driver.navigate().to(baseUrl+productsPageObjects.productsPageUrl());
+
 	}
 
 	@When("user redirected to products page with title as {string}")
 	public void user_redirected_to_products_page_with_title_as(String pageTitle)
 	{
-		wait.until(ExpectedConditions.titleContains(pageTitle));
-		Assert.assertEquals(pageTitle, driver.getTitle());
+//		wait.until(ExpectedConditions.titleContains(pageTitle));
+//		Assert.assertEquals(pageTitle, driver.getTitle());
+		productsPageObjects.validateProdPageTitle(pageTitle);
 	}
 	
 	@When("url page login page containts the {string} as keyword")
 	public void url_for_the_login_page_contains_the_as_keyword( String keywordInUrl)
 	{
-		wait.until(ExpectedConditions.urlContains(keywordInUrl));
-		Assert.assertEquals(true, driver.getCurrentUrl().contains(keywordInUrl));
+//		wait.until(ExpectedConditions.urlContains(keywordInUrl));
+//		Assert.assertEquals(true, driver.getCurrentUrl().contains(keywordInUrl));
+		productsPageObjects.validatePageUrlKeyword(keywordInUrl);
 	}
 	
 	@When("user search for a product {string}")
 	public void user_search_for_a_product(String productName)
 	{
-		WebElement productsearchBoxEle = driver.findElement(By.xpath("//input[@id='search_product']"));
-		productsearchBoxEle.sendKeys(productName);
+//		WebElement productsearchBoxEle = driver.findElement(By.xpath("//input[@id='search_product']"));
+//		productsearchBoxEle.sendKeys(productName);
+		productsPageObjects.searchForProd(productName);
 	}
 	
 	@When("click on search button")
 	public void click_on_search_button()
 	{
-		WebElement productsearchBtnEle = driver.findElement(By.xpath("//button[@id='submit_search']"));
-		productsearchBtnEle.click();
+//		WebElement productsearchBtnEle = driver.findElement(By.xpath("//button[@id='submit_search']"));
+//		productsearchBtnEle.click();
+		productsPageObjects.clickOnSearchBtn();
 	}
 	
 	@Then("form the product list the first product contains the {string} as keyword")
 	public void form_the_product_list_the_first_product_contains_the_as_keyword(String productNameKeyword)
 	{
-		List<WebElement> searchProdListEle = driver.findElements(By.xpath("//div[@class='features_items']//div[@class='productinfo text-center']/p"));
-		Assert.assertEquals(true, searchProdListEle.get(0).getText().contains(productNameKeyword));
+//		List<WebElement> searchProdListEle = driver.findElements(By.xpath("//div[@class='features_items']//div[@class='productinfo text-center']/p"));
+//		Assert.assertEquals(true, searchProdListEle.get(0).getText().contains(productNameKeyword));
+		productsPageObjects.ValproductsListFirstProdName(productNameKeyword);
 	}
 	
 	@When("User is able to see {string} header")
 	public void user_is_able_to_see_header(String categoryStringValue) {
-		WebElement categoryStringEle = driver.findElement(By.xpath("//h2[text()='Category'] "));
-		Assert.assertEquals(categoryStringValue, categoryStringEle.getText());
+//		WebElement categoryStringEle = driver.findElement(By.xpath("//h2[text()='Category'] "));
+//		Assert.assertEquals(categoryStringValue, categoryStringEle.getText());
+		productsPageObjects.ValproductsListFirstProdName(categoryStringValue);
 	}
 
 	@Then("Under category below list is displayed")
@@ -194,11 +210,12 @@ public class StepDef {
 	    // Double, Byte, Short, Long, BigInteger or BigDecimal.
 	    //
 	    // For other transformations you can register a DataTableType.
-		List<String> expectedbrandCategoryNameList = brandCategoryNameList;
-		List<WebElement> actBrandCategoryListEle = driver.findElements(By.xpath("//div[@id='accordian']//div[@class='panel-heading']//a"));
-		for(int i = 0; i < expectedbrandCategoryNameList.size(); i++);
-		{
-			System.out.println(actBrandCategoryListEle.get(i).getText());	
-		}
+//		List<String> expectedbrandCategoryNameList = brandCategoryNameList;
+//		List<WebElement> actBrandCategoryListEle = driver.findElements(By.xpath("//div[@id='accordian']//div[@class='panel-heading']//a"));
+//		for(int i = 0; i < expectedbrandCategoryNameList.size(); i++);
+//		{
+//			System.out.println(actBrandCategoryListEle.get(i).getText());	
+//		}
+		productsPageObjects.validateCategoryList(brandCategoryNameList);
 }
 }

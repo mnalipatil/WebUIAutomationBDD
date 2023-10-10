@@ -9,9 +9,9 @@ import io.cucumber.junit.CucumberOptions;
 @CucumberOptions(
         features="classpath:features",//to tell cucumber where is ur feature file
         glue="com.qa.automation.stefdefs", // to tell cucumber where is ur step def code
-        tags="@prodMainCategory", // to tell which tagged feature file to execute
+        tags="@ProdSearch", // to tell which tagged feature file to execute
         plugin = {"pretty", // to generate reports
-            "html:target/html/htmlreport.html",
+            "html:target/html/web_ui_automation_report.html",
             "json:target/json/file.json",
             },
         monochrome = true,
