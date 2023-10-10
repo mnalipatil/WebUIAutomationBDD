@@ -28,3 +28,6 @@ hs_err_pid*
 .project
 .classpath
 *.exe
+/test output/
+/test-output-thread/
+/test-output/
