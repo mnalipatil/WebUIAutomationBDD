@@ -25,10 +25,10 @@ public class WebDriverFactory {
     public static WebDriver getWebDriverForBrowser(String browser) throws Exception {
         switch(browser.toLowerCase()){
             case "chrome":
-            	System.setProperty("webdriver.chrome.driver","C:\\Users\\Manali Patil\\eclipse-workspace\\chromedriver-win64 (1)\\chromedriver-win64\\chromedriver.exe");
+            	System.setProperty("webdriver.chrome.driver","C:\\Users\\Manali Patil\\eclipse-workspace\\chromedriver-win64 (2)\\chromedriver-win64\\chromedriver.exe");
         		logger.info("Setting up for browser path is completed");
         		ChromeOptions opt = new ChromeOptions();
-        		opt.setBinary("C:\\Users\\Manali Patil\\eclipse-workspace\\chrome-win64 (1)\\chrome-win64\\chrome.exe");
+        		opt.setBinary("C:\\Users\\Manali Patil\\eclipse-workspace\\chrome-win64 (2)\\chrome-win64\\chrome.exe");
         		logger.info("Setting up chrome binary completed");
         		driver = new ChromeDriver(opt);
                 logger.info("Chrome Browser invoked"); 
@@ -50,10 +50,10 @@ public class WebDriverFactory {
                 logger.info("Opera Browser invoked");
                 break;
             case "headless":
-            	System.setProperty("webdriver.chrome.driver","C:\\Users\\Manali Patil\\eclipse-workspace\\chromedriver-win64 (1)\\chromedriver-win64\\chromedriver.exe");
+            	System.setProperty("webdriver.chrome.driver","C:\\Users\\Manali Patil\\eclipse-workspace\\chromedriver-win64 (2)\\chromedriver-win64\\chromedriver.exe");
         		logger.info("Setting up for browser path is completed");
         		ChromeOptions options = new ChromeOptions();
-        		options.setBinary("C:\\Users\\Manali Patil\\eclipse-workspace\\chrome-win64 (1)\\chrome-win64\\chrome.exe");
+        		options.setBinary("C:\\Users\\Manali Patil\\eclipse-workspace\\chrome-win64 (2)\\chrome-win64\\chrome.exe");
         		logger.info("Setting up chrome binary completed");
         		options.addArguments("headless");
         		options.addArguments("window-size=1200x600");
